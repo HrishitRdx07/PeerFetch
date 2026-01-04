@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -19,7 +19,7 @@ interface Student {
     extracurriculars: string | null;
 }
 
-export default function SearchPage() {
+function SearchResults() {
     const searchParams = useSearchParams();
     const query = searchParams.get('q') || '';
 
@@ -158,5 +158,17 @@ export default function SearchPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            </div>
+        }>
+            <SearchResults />
+        </Suspense>
     );
 }

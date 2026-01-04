@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import Image from 'next/image';
@@ -31,7 +31,7 @@ interface Conversation {
     unreadCount: number;
 }
 
-export default function MessagesPage() {
+function MessagesContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const selectedUserId = searchParams.get('userId');
@@ -335,5 +335,20 @@ export default function MessagesPage() {
                 </div>
             </main>
         </div>
+    );
+}
+
+export default function MessagesPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+                <Sidebar />
+                <div className="flex-1 ml-64 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                </div>
+            </div>
+        }>
+            <MessagesContent />
+        </Suspense>
     );
 }

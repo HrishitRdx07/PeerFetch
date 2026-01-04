@@ -1,11 +1,11 @@
+export const dynamic = 'force-dynamic';
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-
-export const dynamic = 'force-dynamic';
 
 interface Student {
     id: string;

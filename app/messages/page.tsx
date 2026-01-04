@@ -1,11 +1,11 @@
+export const dynamic = 'force-dynamic';
+
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import Image from 'next/image';
-
-export const dynamic = 'force-dynamic';
 
 interface User {
     id: string;

@@ -1,32 +1,39 @@
-// This is your Prisma schema file
+// This is a list of providers whose functionality depends on a filesystem
+// For production use with Vercel, you MUST use PostgreSQL
+// 
+// 1. Go to Vercel Dashboard -> Storage -> Create Database -> Postgres
+// 2. Copy the DATABASE_URL from environment variables  
+// 3. Add it to your .env file locally and in Vercel settings
+//
+// Example .env:
+// DATABASE_URL="postgresql://user:password@host/database?sslmode=require"
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "postgresql"  // Changed from "sqlite"
   url      = env("DATABASE_URL")
 }
 
+// ... rest of your models stay the same
 model User {
-  id            String    @id @default(cuid())
-  studentId     String    @unique
+  id            String   @id @default(cuid())
+  studentId     String   @unique
   password      String
   name          String
   email         String?
-  branch        String    // EL, CP, EC, EE, ME, CE, PE, IT
-  year          Int       // 1, 2, 3, 4
-  batch         Int       // 2022, 2023, 2024, 2025
-  isApproved    Boolean   @default(false)
-  isAdmin       Boolean   @default(false)
-  
-  // Profile fields
+  branch        String
+  year          Int
+  batch         Int
+  isAdmin       Boolean  @default(false)
+  isApproved    Boolean  @default(false)
   profilePicture String?
   bio           String?
+  skills        String?
+  extracurriculars String?
   linkedinUrl   String?
-  skills        String?   // JSON string array
-  extracurriculars String? // JSON string array: TRS, TSA, BAHA, IEEE, IEI
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -47,23 +54,21 @@ model MentorshipRequest {
   id        String   @id @default(cuid())
   mentorId  String
   menteeId  String
-  message   String?
-  status    String   @default("pending") // pending, accepted, rejected
+  message   String
+  status    String   @default("pending")
   
   mentor    User     @relation("MentorRequests", fields: [mentorId], references: [id])
   mentee    User     @relation("MenteeRequests", fields: [menteeId], references: [id])
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  @@unique([mentorId, menteeId])
 }
 
 model Connection {
   id         String   @id @default(cuid())
   senderId   String
   receiverId String
-  status     String   @default("pending") // pending, accepted, rejected
+  status     String   @default("pending")
   
   sender     User     @relation("SentConnections", fields: [senderId], references: [id])
   receiver   User     @relation("ReceivedConnections", fields: [receiverId], references: [id])

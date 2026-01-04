@@ -1,0 +1,99 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  studentId     String    @unique
+  password      String
+  name          String
+  email         String?
+  branch        String    // EL, CP, EC, EE, ME, CE, PE, IT
+  year          Int       // 1, 2, 3, 4
+  batch         Int       // 2022, 2023, 2024, 2025
+  isApproved    Boolean   @default(false)
+  isAdmin       Boolean   @default(false)
+  
+  // Profile fields
+  profilePicture String?
+  bio           String?
+  linkedinUrl   String?
+  skills        String?   // JSON string array
+  extracurriculars String? // JSON string array: TRS, TSA, BAHA, IEEE, IEI
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  sentRequests     MentorshipRequest[] @relation("MentorRequests")
+  receivedRequests MentorshipRequest[] @relation("MenteeRequests")
+  
+  sentConnections     Connection[] @relation("SentConnections")
+  receivedConnections Connection[] @relation("ReceivedConnections")
+  
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  
+  sessions Session[]
+}
+
+model MentorshipRequest {
+  id        String   @id @default(cuid())
+  mentorId  String
+  menteeId  String
+  message   String?
+  status    String   @default("pending") // pending, accepted, rejected
+  
+  mentor    User     @relation("MentorRequests", fields: [mentorId], references: [id])
+  mentee    User     @relation("MenteeRequests", fields: [menteeId], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([mentorId, menteeId])
+}
+
+model Connection {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  status     String   @default("pending") // pending, accepted, rejected
+  
+  sender     User     @relation("SentConnections", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedConnections", fields: [receiverId], references: [id])
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@unique([senderId, receiverId])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  content    String
+  isRead     Boolean  @default(false)
+  
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  
+  createdAt  DateTime @default(now())
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  
+  user      User     @relation(fields: [userId], references: [id])
+  
+  createdAt DateTime @default(now())
+}

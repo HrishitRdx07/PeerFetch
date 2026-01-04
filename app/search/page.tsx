@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -20,7 +20,6 @@ interface Student {
 }
 
 export default function SearchPage() {
-    const router = useRouter();
     const searchParams = useSearchParams();
     const query = searchParams.get('q') || '';
 

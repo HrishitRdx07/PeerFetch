@@ -5,6 +5,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 interface Student {
     id: string;
     studentId: string;
@@ -127,8 +129,8 @@ export default function SearchPage() {
                                                 {student.studentId} • {getBranchName(student.branch)}
                                             </p>
                                             <span className={`inline-block mt-1 text-xs font-semibold px-2 py-1 rounded ${student.year >= 3
-                                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                                                    : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
                                                 }`}>
                                                 {student.year >= 3 ? 'Senior' : 'Junior'}
                                             </span>
